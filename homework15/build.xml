@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:jacoco="antlib:org.jacoco.ant" basedir="." default="coverage-report" name="homework15">
+   <property environment="env" />
+    <property name="junitpath" value="${env.JUNIT_CS680}" />
+    <property name="hamcrestpath" value="${env.HAMCREST_CORE_CS680}" />
+    <property name="jacocopath" value="${env.JACOCO_CS680}" />
+	
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+        <classpath path="${jacocopath}" />
+    </taskdef>
+	
+    <target name="coverage-report" depends="runjunit">
+        <jacoco:report>
+				<executiondata>
+					<file file="test/coverage.exec"/>
+				</executiondata>
+				<structure name="Homework15">
+					<classfiles>
+						<fileset dir="bin"/>
+					</classfiles>
+					<sourcefiles>
+						<fileset dir="src"/>
+					</sourcefiles>
+				</structure>
+				<html destdir="test"/>
+        </jacoco:report>
+        <delete file="test/coverage.exec" />
+    </target>
+	<target name="runjunit" depends="compile">
+	      <jacoco:coverage destfile="test/coverage.exec">
+					<junit printsummary="true" fork ="true" haltonfailure="no">
+						 <batchtest fork="yes" todir="${reports.tests}">
+								<fileset dir="test/bin">
+									<include name="**/*Test*.class"/>
+								</fileset>
+						</batchtest>
+						<classpath>
+							 <pathelement location="${junitpath}" />
+							 <pathelement location="${hamcrestpath}" />
+							 <pathelement location="test/bin"/>
+							 <pathelement location="bin" />
+				
+						</classpath>
+					</junit>
+	      </jacoco:coverage>
+	</target>
+
+	<target name ="compile">
+	  <mkdir dir="bin" />
+	   <mkdir dir="test/bin" />
+		<javac includeantruntime="false" srcdir="./src" destdir ="bin" />
+		<javac includeantruntime="false" srcdir="test/src" destdir="test/bin">
+			<classpath>
+			  <pathelement location="${junitpath}" />
+              <pathelement location="${hamcrestpath}" />
+			  <pathelement location="bin" />
+			</classpath>
+
+		</javac>	
+	</target>
+	
+
+</project>
